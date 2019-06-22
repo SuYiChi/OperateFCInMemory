@@ -38,9 +38,31 @@ namespace ConsoleApp1
                 // 新增featureclass
                 IFeatureClass pFC = pInMemoryGDB.CreateFC("MyFeatureClass");
 
-                // Bulk insert feature
-                List<IPoint> points = new List<IPoint>();
+                // Bulk insert feature (sample data)
+                List<IPoint> points = new List<IPoint>() {
+                    new Point() { X = 121.467406, Y = 25.072859 },
+                    new Point() { X = 121.473459, Y = 25.071536 },
+                    new Point() { X = 121.487450, Y = 25.064146 },
+                    new Point() { X = 121.492685, Y = 25.061111 },
+                    new Point() { X = 121.493627, Y = 25.055513 }
+                };
+
                 pInMemoryGDB.InsertFeature(points, ref pFC);
+
+                // for validate
+                Console.WriteLine(pFC.FeatureCount(null));
+                IFeatureCursor pFeatCur = pFC.Search(null, true);
+                var pFeat = pFeatCur.NextFeature();
+                while (pFeat != null)
+                {
+                    var x = (pFeat.Shape as IPoint).X;
+                    var y = (pFeat.Shape as IPoint).Y;
+
+                    Console.WriteLine("OID={0} X={1} Y={2}", pFeat.OID, x, y);
+
+                    pFeat = pFeatCur.NextFeature();
+                }
+                
 
                 Console.WriteLine("Press Enter to stop process.");
                 Console.ReadLine();
